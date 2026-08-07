@@ -31,7 +31,7 @@ npm run build   # 产物在 dist/index.js
 ### 1. 获取代码
 
 ```bash
-git clone https://github.com/<你的账号>/gemini-vision-mcp.git
+git clone https://github.com/arieslee/deepseek-vision-mcp.git
 cd gemini-vision-mcp
 npm install
 npm run build
@@ -55,11 +55,11 @@ GEMINI_API_KEY=你的_API_Key
 
 - 从仓库根安装（自动识别 skill）：
   ```
-  install_source source=https://github.com/<你的账号>/gemini-vision-mcp
+  install_source source=https://github.com/arieslee/deepseek-vision-mcp
   ```
 - 或直接安装 raw 文件：
   ```
-  install_source source=https://raw.githubusercontent.com/<你的账号>/gemini-vision-mcp/main/skills/vision/SKILL.md
+  install_source source=https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/skills/vision/SKILL.md
   ```
 
 装好后即可在 Reasonix 中说「识别这张图片」使用。skill 会按 `VISION_MCP_DIR` 环境变量 → 默认路径 → 查找 `analyze-image.mjs` 的顺序定位项目目录，找不到时向你询问。
