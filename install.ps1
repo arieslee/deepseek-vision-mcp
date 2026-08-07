@@ -25,13 +25,22 @@
   ./install.ps1 -InstallDir D:\tools\deepseek-vision-mcp
 #>
 param(
-  [string]$InstallDir = (Join-Path $PSScriptRoot "deepseek-vision-mcp"),
+  [string]$InstallDir,
   [string]$RepoUrl = "https://github.com/arieslee/deepseek-vision-mcp.git",
   [switch]$SkipClone,
   [switch]$SkipBuild
 )
 
 $ErrorActionPreference = "Stop"
+
+# 默认安装目录：本地运行 = 脚本所在目录；远程执行（$PSScriptRoot 为空）= 当前目录
+if (-not $InstallDir) {
+  if ($PSScriptRoot) {
+    $InstallDir = Join-Path $PSScriptRoot "deepseek-vision-mcp"
+  } else {
+    $InstallDir = Join-Path (Get-Location).Path "deepseek-vision-mcp"
+  }
+}
 
 function Write-Step([string]$msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Assert-Exit([string]$what) {

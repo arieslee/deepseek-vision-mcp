@@ -30,17 +30,19 @@ npm run build   # 产物在 dist/index.js
 
 仓库根目录自带 `install.ps1`，一条命令完成：克隆/更新代码 → `npm install` → `npm run build` → 生成 `.env` 模板 → 打印 MCP 注册配置与 skill 安装命令。
 
-下载到本地运行（推荐，可先审阅脚本）：
+**一条命令（PowerShell 5.1+，推荐）**：
+
+```powershell
+irm 'https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/install.ps1' | iex
+```
+
+> 注意：这会在**当前目录**下创建 `deepseek-vision-mcp` 文件夹并安装。执行远程脚本前请确认来源可信（内容可在 GitHub 上审阅）。
+
+需要自定义参数（如指定安装目录）时，下载到本地运行：
 
 ```powershell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/install.ps1" -OutFile install.ps1
-./install.ps1
-```
-
-或直接远程执行（快捷方式，注意：执行远程脚本前请确认来源可信）：
-
-```powershell
-iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/install.ps1'))
+./install.ps1 -InstallDir D:\tools\deepseek-vision-mcp
 ```
 
 常用参数：
