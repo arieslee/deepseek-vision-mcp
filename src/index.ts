@@ -38,6 +38,19 @@ function loadDotEnv(): void {
 loadDotEnv();
 
 const API_KEY = process.env.GEMINI_API_KEY ?? "";
+
+const KEY_PLACEHOLDERS = new Set([
+  "your_api_key_here",
+  "your_api_key",
+  "your_key",
+  "你的_api_key",
+  "你的key",
+]);
+
+/** API Key 是否已真正配置（排除空值与常见占位符） */
+function hasConfiguredKey(): boolean {
+  return API_KEY.trim().length > 0 && !KEY_PLACEHOLDERS.has(API_KEY.trim().toLowerCase());
+}
 const MODEL = process.env.GEMINI_MODEL?.trim() || "gemini-3.5-flash";
 const API_BASE =
   process.env.GEMINI_API_BASE?.trim() || "https://generativelanguage.googleapis.com/v1beta";
@@ -113,7 +126,7 @@ async function callGemini(
   image: { mimeType: string; data: string },
   maxTokens: number
 ): Promise<string> {
-  if (!API_KEY) {
+  if (!hasConfiguredKey()) {
     throw new Error(
       "未配置 GEMINI_API_KEY。请通过环境变量设置你的 Gemini API Key（参见 README）。"
     );
@@ -213,7 +226,7 @@ server.registerTool(
   },
   async ({ image, prompt, maxTokens }) => {
     try {
-      if (!API_KEY) {
+      if (!hasConfiguredKey()) {
         throw new Error(
           "未配置 GEMINI_API_KEY。请通过环境变量设置你的 Gemini API Key（参见 README）。"
         );
@@ -235,7 +248,7 @@ server.registerTool(
 // 启动（stdio transport）
 // ---------------------------------------------------------------------------
 const transport = new StdioServerTransport();
-if (!API_KEY) {
+if (!hasConfiguredKey()) {
   // stderr 不影响 stdio 协议（JSON-RPC 走 stdout）
   console.error(
     "[warn] 未检测到 GEMINI_API_KEY，analyze_image 调用会失败。请在启动前设置环境变量。"

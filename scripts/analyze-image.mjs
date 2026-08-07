@@ -81,10 +81,18 @@ if (maxTokens !== undefined && (!Number.isInteger(maxTokens) || maxTokens < 1 ||
 }
 
 // ---- 前置检查 ------------------------------------------------------------
-if (!process.env.GEMINI_API_KEY) {
-  console.error("[错误] 未设置环境变量 GEMINI_API_KEY，无法调用 Gemini。");
+const RAW_KEY = (process.env.GEMINI_API_KEY ?? "").trim();
+const KEY_PLACEHOLDERS = [
+  "your_api_key_here",
+  "your_api_key",
+  "your_key",
+  "你的_api_key",
+  "你的key",
+];
+if (!RAW_KEY || KEY_PLACEHOLDERS.includes(RAW_KEY.toLowerCase())) {
+  console.error("[错误] 未配置有效的 GEMINI_API_KEY，无法调用 Gemini。");
   console.error('  PowerShell: $env:GEMINI_API_KEY = "你的_API_Key"');
-  console.error("  设置后重新运行本命令。");
+  console.error("  或在项目 .env 中填入 GEMINI_API_KEY 后重新运行本命令。");
   process.exit(1);
 }
 if (!existsSync(serverPath)) {

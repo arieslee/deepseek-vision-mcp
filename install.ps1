@@ -81,7 +81,14 @@ try {
 # ---- 3. .env 模板 -----------------------------------------------------------
 $envFile = Join-Path $InstallDir ".env"
 if (-not (Test-Path $envFile)) {
-  Copy-Item (Join-Path $InstallDir ".env.example") $envFile
+  # 生成空值模板（占位符会被视为"未配置"，避免误导）
+  Set-Content -Path $envFile -Value @(
+    "# Gemini API Key，从 https://aistudio.google.com/apikey 获取（必填）",
+    "GEMINI_API_KEY=",
+    "",
+    "# 可选：模型 ID，默认 gemini-3.5-flash",
+    "# GEMINI_MODEL=gemini-3.5-flash"
+  ) -Encoding UTF8
   Write-Step "已生成 .env 模板: $envFile（请打开填入 GEMINI_API_KEY）"
 } else {
   Write-Step ".env 已存在，跳过: $envFile"
