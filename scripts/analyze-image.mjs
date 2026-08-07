@@ -25,9 +25,10 @@ const projectRoot = path.join(__dirname, "..");
 const serverPath = path.join(projectRoot, "dist", "index.js");
 const CALL_TIMEOUT_MS = 180_000; // 图片上传+推理可能较慢
 
-// ---- 加载项目 .env（仅当对应环境变量未设置时填充） -------------------------
-const envFile = path.join(projectRoot, ".env");
-if (existsSync(envFile)) {
+// ---- 加载 .env（cwd 优先，其次项目根；仅填充未设置的环境变量） ----------------
+for (const dir of [process.cwd(), projectRoot]) {
+  const envFile = path.join(dir, ".env");
+  if (!existsSync(envFile)) continue;
   for (const line of readFileSync(envFile, "utf8").split(/\r?\n/)) {
     const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
     if (m && process.env[m[1]] === undefined) {

@@ -11,21 +11,24 @@ import path from "node:path";
 // ---------------------------------------------------------------------------
 const PROJECT_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
-/** 加载项目 .env（仅当对应环境变量未设置时填充），便于用户"配置一次长期生效" */
+/** 加载 .env（cwd 优先，其次项目根；仅填充未设置的环境变量）便于用户"配置一次长期生效" */
 function loadDotEnv(): void {
-  const envFile = path.join(PROJECT_ROOT, ".env");
-  if (!existsSync(envFile)) return;
-  for (const line of readFileSync(envFile, "utf8").split(/\r?\n/)) {
-    const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
-    if (!m || process.env[m[1]] !== undefined) continue;
-    let value = m[2];
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
+  const candidates = [process.cwd(), PROJECT_ROOT];
+  for (const dir of candidates) {
+    const envFile = path.join(dir, ".env");
+    if (!existsSync(envFile)) continue;
+    for (const line of readFileSync(envFile, "utf8").split(/\r?\n/)) {
+      const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
+      if (!m || process.env[m[1]] !== undefined) continue;
+      let value = m[2];
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      process.env[m[1]] = value;
     }
-    process.env[m[1]] = value;
   }
 }
 loadDotEnv();

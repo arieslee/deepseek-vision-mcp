@@ -26,7 +26,56 @@ npm install
 npm run build   # 产物在 dist/index.js
 ```
 
-## 从 GitHub 安装（分发到其他机器 / 项目）
+## 一键脚本安装（Windows，推荐）
+
+仓库根目录自带 `install.ps1`，一条命令完成：克隆/更新代码 → `npm install` → `npm run build` → 生成 `.env` 模板 → 打印 MCP 注册配置与 skill 安装命令。
+
+下载到本地运行（推荐，可先审阅脚本）：
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/install.ps1" -OutFile install.ps1
+./install.ps1
+```
+
+或直接远程执行（快捷方式，注意：执行远程脚本前请确认来源可信）：
+
+```powershell
+iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/install.ps1'))
+```
+
+常用参数：
+
+```powershell
+./install.ps1 -InstallDir D:\tools\deepseek-vision-mcp   # 指定安装目录
+./install.ps1 -SkipClone                                  # 目录已存在，只重新构建
+```
+
+## npm 安装（npx 即用，最方便）
+
+> **命名说明**：GitHub 仓库名为 `deepseek-vision-mcp`，但 npm 上该名字已被他人占用（另一个视觉 MCP server），因此 **npm 发布名使用 `gemini-vision-mcp`**——同一个项目，两个名字各管一摊：GitHub = 源码仓库，npm = 包分发。
+
+```bash
+# 全局安装
+npm install -g gemini-vision-mcp
+```
+
+MCP 客户端配置（无需 clone，`npx` 直接运行，env 注入 Key；或在你工作目录放一个 `.env` 写入 `GEMINI_API_KEY=你的Key`，server 会自动读取 cwd 下的 `.env`）：
+
+```json
+{
+  "mcpServers": {
+    "gemini-vision-mcp": {
+      "command": "npx",
+      "args": ["-y", "gemini-vision-mcp"],
+      "env": { "GEMINI_API_KEY": "你的_API_Key" }
+    }
+  }
+}
+```
+
+> 状态：`gemini-vision-mcp@0.1.0` 目前**尚未发布到 npm**（需要拥有 npm 账号的人执行一次 `npm publish`）。发布后以上配置即可直接使用。
+
+## 从 GitHub 安装（手动方式，分发到其他机器 / 项目）
 
 ### 1. 获取代码
 

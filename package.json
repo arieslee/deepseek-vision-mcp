@@ -1,14 +1,20 @@
 {
-  "name": "deepseek-vision-mcp",
+  "name": "gemini-vision-mcp",
   "version": "0.1.0",
-  "description": "MCP server that calls the Gemini vision model (default gemini-3.5-flash) to analyze images",
+  "description": "MCP server that calls the Gemini vision model (default gemini-3.5-flash) to analyze images. GitHub repo: arieslee/deepseek-vision-mcp (npm name differs because deepseek-vision-mcp is taken on npm).",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "deepseek-vision-mcp": "./dist/index.js"
+    "gemini-vision-mcp": "./dist/index.js"
   },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "node dist/smoke-test.js"
@@ -16,14 +22,16 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "zod": "^4.4.3"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arieslee/deepseek-vision-mcp.git"
   },
-  "devDependencies": {
-    "@types/node": "^26.1.2",
-    "tsx": "^4.23.9",
-    "typescript": "^7.0.2"
-  }
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "gemini",
+    "vision",
+    "image-recognizer"
+  ],
+  "license": "MIT"
 }
