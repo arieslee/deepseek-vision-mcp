@@ -67,7 +67,10 @@ try {
   });
   assert(init.result?.serverInfo?.name === "deepseek-vision-mcp", "initialize 握手成功");
 
-  await send("notifications/initialized", {});
+  // JSON-RPC 通知：不带 id、不等待响应
+  child.stdin!.write(
+    JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized", params: {} }) + "\n"
+  );
 
   // 2) tools/list
   const list = await send("tools/list", {});

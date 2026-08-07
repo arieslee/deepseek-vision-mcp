@@ -33,11 +33,14 @@ for (const dir of [process.cwd(), projectRoot]) {
     const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
     if (m && process.env[m[1]] === undefined) {
       let value = m[2];
-      if (
+      const quoted =
         (value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))
-      ) {
+        (value.startsWith("'") && value.endsWith("'"));
+      if (quoted) {
         value = value.slice(1, -1);
+      } else {
+        const hashIdx = value.indexOf(" #");
+        if (hashIdx >= 0) value = value.slice(0, hashIdx).trimEnd();
       }
       process.env[m[1]] = value;
     }
@@ -45,12 +48,21 @@ for (const dir of [process.cwd(), projectRoot]) {
 }
 
 // ---- 参数解析 ------------------------------------------------------------
-const positional = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+// 注意：必须跳过 "--max-tokens" 及其值，否则 "2048" 会被误当成 prompt
+const args = process.argv.slice(2);
+const positional = [];
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--max-tokens") {
+    i++; // 跳过其值
+    continue;
+  }
+  if (args[i].startsWith("--")) continue;
+  positional.push(args[i]);
+}
 const image = positional[0];
 const prompt = positional[1];
-const maxIdx = process.argv.indexOf("--max-tokens");
-const maxTokens =
-  maxIdx >= 0 ? Number(process.argv[maxIdx + 1]) : undefined;
+const maxIdx = args.indexOf("--max-tokens");
+const maxTokens = maxIdx >= 0 ? Number(args[maxIdx + 1]) : undefined;
 
 if (!image) {
   console.error(
@@ -135,7 +147,10 @@ try {
     capabilities: {},
     clientInfo: { name: "gemini-vision-cli", version: "0.1.0" },
   });
-  await send("notifications/initialized", {});
+  // JSON-RPC 通知：不带 id、不等待响应
+  child.stdin.write(
+    JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized", params: {} }) + "\n"
+  );
 
   const arguments_ = { image };
   if (prompt) arguments_.prompt = prompt;

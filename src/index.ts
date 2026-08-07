@@ -21,11 +21,15 @@ function loadDotEnv(): void {
       const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
       if (!m || process.env[m[1]] !== undefined) continue;
       let value = m[2];
-      if (
+      const quoted =
         (value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))
-      ) {
+        (value.startsWith("'") && value.endsWith("'"));
+      if (quoted) {
         value = value.slice(1, -1);
+      } else {
+        // 未加引号的值支持行尾注释（以 " #" 分隔）
+        const hashIdx = value.indexOf(" #");
+        if (hashIdx >= 0) value = value.slice(0, hashIdx).trimEnd();
       }
       process.env[m[1]] = value;
     }
@@ -39,6 +43,8 @@ const API_BASE =
   process.env.GEMINI_API_BASE?.trim() || "https://generativelanguage.googleapis.com/v1beta";
 
 const DEFAULT_PROMPT = "请详细描述这张图片的内容";
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024; // Gemini 单图约 20MB 上限，提前拦截超大输入
+const URL_FETCH_TIMEOUT_MS = 60_000;
 
 const MIME_BY_EXT: Record<string, string> = {
   ".png": "image/png",
@@ -67,14 +73,21 @@ async function loadImageData(
   if (image.startsWith("data:")) {
     const m = /^data:([^;,]+);base64,(.+)$/s.exec(image);
     if (!m) throw new Error("无效的 data URI（仅支持 base64 编码，形如 data:image/png;base64,xxxx）");
+    if (!m[1].startsWith("image/")) throw new Error(`不支持的 data URI 类型：${m[1]}（仅接受 image/*）`);
+    if (Math.ceil((m[2].length * 3) / 4) > MAX_IMAGE_BYTES) {
+      throw new Error("图片超过大小上限（20MB）");
+    }
     return { mimeType: m[1], data: m[2] };
   }
 
-  // 2) http(s) URL：下载后转 base64
+  // 2) http(s) URL：下载后转 base64（带超时与大小限制）
   if (/^https?:\/\//i.test(image)) {
-    const res = await fetch(image);
+    const res = await fetch(image, { signal: AbortSignal.timeout(URL_FETCH_TIMEOUT_MS) });
     if (!res.ok) throw new Error(`下载图片失败：HTTP ${res.status}`);
+    const declared = Number(res.headers.get("content-length") ?? 0);
+    if (declared > MAX_IMAGE_BYTES) throw new Error("图片超过大小上限（20MB）");
     const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > MAX_IMAGE_BYTES) throw new Error("图片超过大小上限（20MB）");
     const mimeType =
       res.headers.get("content-type")?.split(";")[0].trim() ||
       mimeFromPath(new URL(image).pathname);
@@ -89,6 +102,7 @@ async function loadImageData(
     throw new Error(`无法访问图片文件：${image}`);
   }
   if (!st.isFile()) throw new Error(`不是文件：${image}`);
+  if (st.size > MAX_IMAGE_BYTES) throw new Error("图片超过大小上限（20MB）");
   const buf = await readFile(image);
   return { mimeType: mimeFromPath(image), data: buf.toString("base64") };
 }
@@ -104,13 +118,14 @@ async function callGemini(
       "未配置 GEMINI_API_KEY。请通过环境变量设置你的 Gemini API Key（参见 README）。"
     );
   }
-  const url = `${API_BASE}/models/${encodeURIComponent(MODEL)}:generateContent?key=${encodeURIComponent(
-    API_KEY
-  )}`;
+  const url = `${API_BASE}/models/${encodeURIComponent(MODEL)}:generateContent`;
 
   const res = await fetch(url, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      "x-goog-api-key": API_KEY, // key 放请求头，避免出现在 URL/代理日志
+    },
     body: JSON.stringify({
       contents: [
         {
@@ -130,8 +145,15 @@ async function callGemini(
 
   if (!res.ok) {
     const errText = await res.text();
+    let detail = errText;
+    try {
+      const j = JSON.parse(errText) as { error?: { message?: string } };
+      if (j?.error?.message) detail = j.error.message;
+    } catch {
+      /* 非 JSON 响应则原样展示 */
+    }
     throw new Error(
-      `Gemini API 调用失败（HTTP ${res.status}）：${errText.slice(0, 800)}`
+      `Gemini API 调用失败（HTTP ${res.status}）：${detail.slice(0, 800)}`
     );
   }
 
