@@ -1,11 +1,14 @@
 {
-  "name": "gemini-vision-mcp",
+  "name": "@ariesli/deepseek-vision-mcp",
   "version": "0.1.0",
-  "description": "MCP server that calls the Gemini vision model (default gemini-3.5-flash) to analyze images. GitHub repo: arieslee/deepseek-vision-mcp (npm name differs because deepseek-vision-mcp is taken on npm).",
+  "description": "MCP server that calls the Gemini vision model (default gemini-3.5-flash) to analyze images.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini-vision-mcp": "./dist/index.js"
+    "deepseek-vision-mcp": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist/",

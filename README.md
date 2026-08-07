@@ -54,11 +54,11 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arieslee/deepseek-visi
 
 ## npm 安装（npx 即用，最方便）
 
-> **命名说明**：GitHub 仓库名为 `deepseek-vision-mcp`，但 npm 上该名字已被他人占用（另一个视觉 MCP server），因此 **npm 发布名使用 `gemini-vision-mcp`**——同一个项目，两个名字各管一摊：GitHub = 源码仓库，npm = 包分发。
+> **命名说明**：npm 全局名 `deepseek-vision-mcp` 已被他人占用（另一个视觉 MCP server），因此使用**作用域包 `@ariesli/deepseek-vision-mcp`**——名字一致、归本仓库作者所有，`npx` 用法不变。
 
 ```bash
 # 全局安装
-npm install -g gemini-vision-mcp
+npm install -g @ariesli/deepseek-vision-mcp
 ```
 
 MCP 客户端配置（无需 clone，`npx` 直接运行，env 注入 Key；或在你工作目录放一个 `.env` 写入 `GEMINI_API_KEY=你的Key`，server 会自动读取 cwd 下的 `.env`）：
@@ -66,16 +66,16 @@ MCP 客户端配置（无需 clone，`npx` 直接运行，env 注入 Key；或�
 ```json
 {
   "mcpServers": {
-    "gemini-vision-mcp": {
+    "deepseek-vision-mcp": {
       "command": "npx",
-      "args": ["-y", "gemini-vision-mcp"],
+      "args": ["-y", "@ariesli/deepseek-vision-mcp"],
       "env": { "GEMINI_API_KEY": "你的_API_Key" }
     }
   }
 }
 ```
 
-> ✅ **已发布**：`gemini-vision-mcp@0.1.0` 已在 npm 上架，以上配置可直接使用（`npm view gemini-vision-mcp` 可查）。
+> ✅ **已发布**：`@ariesli/deepseek-vision-mcp@0.1.0` 已在 npm 上架，以上配置可直接使用（`npm view @ariesli/deepseek-vision-mcp` 可查）。
 
 ## 从 GitHub 安装（手动方式，分发到其他机器 / 项目）
 
