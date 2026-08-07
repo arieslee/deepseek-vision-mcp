@@ -1,4 +1,4 @@
-# gemini-vision-mcp
+# deepseek-vision-mcp
 
 一个基于 TypeScript 的 [MCP](https://modelcontextprotocol.io)（Model Context Protocol）服务器，封装 Gemini 视觉模型，用于图片分析。默认模型 `gemini-3.5-flash`，可通过环境变量覆盖。
 
@@ -32,7 +32,7 @@ npm run build   # 产物在 dist/index.js
 
 ```bash
 git clone https://github.com/arieslee/deepseek-vision-mcp.git
-cd gemini-vision-mcp
+cd deepseek-vision-mcp
 npm install
 npm run build
 ```
@@ -75,7 +75,7 @@ GEMINI_API_KEY=你的_API_Key
   "mcpServers": {
     "gemini-vision": {
       "command": "node",
-      "args": ["C:\\path\\to\\gemini-vision-mcp\\dist\\index.js"],
+      "args": ["C:\\path\\to\\deepseek-vision-mcp\\dist\\index.js"],
       "env": {
         "GEMINI_API_KEY": "你的_API_Key",
         "GEMINI_MODEL": "gemini-3.5-flash"

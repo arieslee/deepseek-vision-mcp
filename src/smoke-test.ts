@@ -65,7 +65,7 @@ try {
     capabilities: {},
     clientInfo: { name: "smoke-test", version: "0.0.1" },
   });
-  assert(init.result?.serverInfo?.name === "gemini-vision-mcp", "initialize 握手成功");
+  assert(init.result?.serverInfo?.name === "deepseek-vision-mcp", "initialize 握手成功");
 
   await send("notifications/initialized", {});
 

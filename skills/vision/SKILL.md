@@ -1,13 +1,13 @@
 ---
 name: vision
-description: 识别/分析图片（调用 gemini-vision-mcp，默认 gemini-3.5-flash）。当用户要求识别、分析、查看、OCR 图片时使用。
+description: 识别/分析图片（调用 deepseek-vision-mcp，默认 gemini-3.5-flash）。当用户要求识别、分析、查看、OCR 图片时使用。
 ---
 
 # Vision — 图片识别 / 分析
 
-识别、分析、查看图片内容时统一走 gemini-vision-mcp 封装好的 CLI（底层通过 stdio MCP 协议调用其 `analyze_image` 工具，模型默认 `gemini-3.5-flash`）。
+识别、分析、查看图片内容时统一走 deepseek-vision-mcp 封装好的 CLI（底层通过 stdio MCP 协议调用其 `analyze_image` 工具，模型默认 `gemini-3.5-flash`）。
 
-## 0. 定位 gemini-vision-mcp 项目目录（按顺序，不要跳过）
+## 0. 定位 deepseek-vision-mcp 项目目录（按顺序，不要跳过）
 
 1. 若环境变量 `VISION_MCP_DIR` 已设置 → 它就是项目目录。
 2. 否则检查默认位置：`C:\Users\Aries\AppData\Roaming\reasonix\global-workspace\gemini-vision-mcp`。

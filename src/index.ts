@@ -159,7 +159,7 @@ async function callGemini(
 // MCP Server
 // ---------------------------------------------------------------------------
 const server = new McpServer({
-  name: "gemini-vision-mcp",
+  name: "deepseek-vision-mcp",
   version: "0.1.0",
 });
 

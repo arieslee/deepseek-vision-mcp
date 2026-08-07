@@ -2,7 +2,7 @@
 /**
  * analyze-image.mjs — Gemini 视觉识别 CLI
  *
- * 通过 stdio MCP 协议调用 gemini-vision-mcp 的 analyze_image 工具，
+ * 通过 stdio MCP 协议调用 deepseek-vision-mcp 的 analyze_image 工具，
  * 因此与 MCP server 共享同一套能力（同一模型、同一图片来源支持）。
  *
  * 用法：
