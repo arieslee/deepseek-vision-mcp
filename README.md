@@ -111,7 +111,7 @@ GEMINI_API_KEY=你的_API_Key
   install_source source=https://raw.githubusercontent.com/arieslee/deepseek-vision-mcp/main/skills/vision/SKILL.md
   ```
 
-装好后即可在 Reasonix 中说「识别这张图片」使用。skill 会按 `VISION_MCP_DIR` 环境变量 → 默认路径 → 查找 `analyze-image.mjs` 的顺序定位项目目录，找不到时向你询问。
+装好后即可在 Reasonix 中说「识别这张图片」使用。skill 定位项目目录的顺序：`VISION_MCP_DIR` 环境变量 → 当前目录/父目录含 `scripts/analyze-image.mjs` → skill 自身位置向上推断 → 常见位置查找 → 询问用户。
 
 ## 在 MCP 客户端中配置
 

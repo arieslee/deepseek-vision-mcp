@@ -10,8 +10,9 @@ description: 识别/分析图片（调用 deepseek-vision-mcp，默认 gemini-3.
 ## 0. 定位 deepseek-vision-mcp 项目目录（按顺序，不要跳过）
 
 1. 若环境变量 `VISION_MCP_DIR` 已设置 → 它就是项目目录。
-2. 否则检查默认位置：`C:\Users\Aries\AppData\Roaming\reasonix\global-workspace\gemini-vision-mcp`。
-3. 仍不存在 → 在常见位置快速查找 `analyze-image.mjs` 所在目录的上一级（它是 `scripts/analyze-image.mjs`，上一级即项目根）；找不到就询问用户项目目录在哪，不要自行猜测路径。
+2. 若当前工作目录或其任一父目录下存在 `scripts/analyze-image.mjs` → 该目录即项目根。
+3. 若本 SKILL.md 的路径形如 `<项目根>\skills\vision\SKILL.md`（skill 安装在项目内）→ 向上两级即为项目根。
+4. 在常见位置（用户主目录、工具目录等）快速查找 `analyze-image.mjs`（它位于项目根的 `scripts/` 下）；仍找不到就询问用户项目目录在哪，不要自行猜测路径。
 
 令 `$MCP` = 找到的项目目录。
 
