@@ -42,5 +42,6 @@
     "vision",
     "image-recognizer"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "author": "ariesli"
 }

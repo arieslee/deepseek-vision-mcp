@@ -75,7 +75,7 @@ MCP 客户端配置（无需 clone，`npx` 直接运行，env 注入 Key；或�
 }
 ```
 
-> 状态：`gemini-vision-mcp@0.1.0` 目前**尚未发布到 npm**（需要拥有 npm 账号的人执行一次 `npm publish`）。发布后以上配置即可直接使用。
+> ✅ **已发布**：`gemini-vision-mcp@0.1.0` 已在 npm 上架，以上配置可直接使用（`npm view gemini-vision-mcp` 可查）。
 
 ## 从 GitHub 安装（手动方式，分发到其他机器 / 项目）
 
